@@ -35,7 +35,9 @@ sonAccount.oneDeposit(500);
 sonAccount.oneWithdraw(400);
 sonAccount.oneWithdraw(250);
 console.log(`Il saldo ammonta a ${sonAccount.balanceInit}€`); */
+var motherAccount = new BankAccount(0);
 var opensAccount = document.getElementById("opens-account");
+var currentBalance = document.getElementById("current-balance");
 opensAccount.addEventListener("submit", function (e) {
     e.preventDefault();
     var personalArea = document.getElementById("personal-area");
@@ -43,12 +45,36 @@ opensAccount.addEventListener("submit", function (e) {
     var startingDeposit = startingAmount.value;
     opensAccount.className = "d-none";
     personalArea.classList.remove("d-none");
-    var currentBalance = document.getElementById("current-balance");
-    currentBalance.innerText = " ".concat(startingDeposit, " \u20AC");
+    motherAccount.balanceInit = Number(startingDeposit);
+    currentBalance.innerText = " ".concat(motherAccount.balanceInit, " \u20AC");
 });
 var depositForm = document.getElementById("deposit-form");
 var withdrawForm = document.getElementById("withdrawal-form");
 depositForm.addEventListener("submit", function (e) {
     e.preventDefault();
     var depositField = document.getElementById("deposit-field");
+    var depositAmount = depositField.value;
+    var transactionsList = document.getElementById("transactions-list");
+    motherAccount.oneDeposit(Number(depositAmount));
+    motherAccount.addInterest(motherAccount.balanceInit);
+    currentBalance.innerText = " ".concat(motherAccount.balanceInit.toString(), "\u20AC");
+    var listItem = document.createElement("li");
+    listItem.className = "list-group-item";
+    listItem.innerText = "Versamento: ".concat(depositAmount, "\u20AC");
+    transactionsList.appendChild(listItem);
+    depositField.value = "";
+});
+withdrawForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var withdrawField = document.getElementById("withdrawal-field");
+    var withdrawAmount = withdrawField.value;
+    var transactionsList = document.getElementById("transactions-list");
+    motherAccount.oneWithdraw(Number(withdrawAmount));
+    motherAccount.addInterest(motherAccount.balanceInit);
+    currentBalance.innerText = " ".concat(motherAccount.balanceInit.toString(), "\u20AC");
+    var listItem = document.createElement("li");
+    listItem.className = "list-group-item";
+    listItem.innerText = "Prelievo: ".concat(withdrawAmount, "\u20AC");
+    transactionsList.appendChild(listItem);
+    withdrawField.value = "";
 });
